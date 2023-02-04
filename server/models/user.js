@@ -23,8 +23,8 @@ const userSchema = new mongoose.Schema({
     },
     answers: {
         type: Array
-    }
-
+    },
+    date: Array
 })
 
 module.exports = mongoose.model('User', userSchema)

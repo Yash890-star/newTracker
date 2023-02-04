@@ -10,6 +10,8 @@ router.post('/register', userRoutes.postRegister)
 router.post('/login', userRoutes.postLogin)
 router.get('/getProblems', userRoutes.getProblems)
 router.post('/postAnswers', userRoutes.postAnswers)
+router.get('/leetcode', userRoutes.getLeetCode)
+router.get('/getTest', userRoutes.getTest)
 
 //Mentor Routes
 router.post('/mentorRegister', mentorRoutes.postRegister)

@@ -60,3 +60,4 @@ exports.getStudent = async (req,res,next) => {
     }
     return res.send(student)
 }
+
