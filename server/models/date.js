@@ -10,7 +10,7 @@ const DateSchema = mongoose.Schema({
         required: true
     },
     count: {
-        type: Object
+        type: Array
     }
 })
 

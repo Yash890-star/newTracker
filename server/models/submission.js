@@ -1,30 +1,30 @@
 const mongoose = require('mongoose')
 
-const problemSchema = new mongoose.Schema({
+const Submission = mongoose.Schema({
+    user: {
+        type: String,
+        required: true
+    },
     mentor: {
         type: String,
         required: true
     },
-    link: {
+    problemLink: {
         type: String,
         required: true
     },
-    level: {
+    submissionLink: {
+        type: String,
+        required: true
+    },
+    submittedDate: {
         type: String,
         required: true
     },
     createdDate: {
         type: String,
         required: true
-    },
-    submissionDate: {
-        type: String,
-        required: true
-    },
-    topic: {
-        type: String,
-        required: true
     }
 })
 
-module.exports = mongoose.model('Problem', problemSchema)
+module.exports = mongoose.model('Submission', Submission)

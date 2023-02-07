@@ -9,15 +9,20 @@ exports.postAddProblem = async (req,res,next) => {
     if(!valid){
         return res.send('pls login')
     }
+    const mentor = await Mentor.findOne({_id: valid._id})
     const problem = new Problem({
-        mentor: req.body.mentor,
+        mentor: mentor.email,
         link: req.body.link,
-        level: req.body.level
+        level: req.body.level,
+        createdDate: req.body.createdDate,
+        submissionDate: req.body.submissionDate,
+        topic: req.body.topic
     })
         const result = await problem.save()
         res.send(result)
     }
-    catch{
+    catch(err){
+        console.log(err)
         res.send('The problem was not added')
     }
 }
