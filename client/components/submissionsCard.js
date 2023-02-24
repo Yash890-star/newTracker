@@ -1,15 +1,20 @@
+import moment from "moment"
+
 const SubmissionsCard = (props) => {
     const a = []
+    console.log(props)
     if (props.data) {
         for (let x of props.data) {
-            console.log(x)
-            let b = <tr>
-            <td className="px-4 py-4 border-slate-500 border">{x.createdDate}</td>
-            <td className="px-4 border border-slate-500 text-blue-400"><a href={x.problemLink}>{x.problemLink}</a></td>
-            <td className="px-4 border border-slate-500 text-blue-400"><a href={x.submissionLink}>{x.submissionLink}</a></td>
-            <td className="px-4 border border-slate-500">{x.user}</td>
-        </tr>
-            a.push(b)
+            if(x.submittedDate == moment().format("DoMMMYYYY")){
+                let b = <tr>
+                <td className="px-4 py-4 border-slate-500 border">{x.createdDate}</td>
+                <td className="px-4 border border-slate-500 text-blue-400"><a href={x.problemLink}>{x.problemLink}</a></td>
+                <td className="px-4 border border-slate-500 text-blue-400"><a href={x.submissionLink}>{x.submissionLink}</a></td>
+                <td className="px-4 border border-slate-500">{x.user}</td>
+            </tr>
+                a.push(b)
+
+            }
         }
     }
     return (<>

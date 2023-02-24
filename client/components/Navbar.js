@@ -17,9 +17,10 @@ const Navbar = () => {
     }
 
     return (<div className={`${s.text} w-screen text-2xl bg-teal-500 text-white`}>
-        <div className='flex w-1/3 mx-auto py-8 text-black justify-around bg-teal-500'>
+        <div className='flex w-2/3 mx-auto py-8 text-black justify-around bg-teal-500'>
             <Link href="/mentor/dashboard/graph">Graph</Link>
             <Link href="/mentor/dashboard/submissions">Submissions</Link>
+            <Link href="/mentor/dashboard/studentData">UserProfile</Link>
             <Link href="/mentor/dashboard/addquestions">Add Questions</Link>
             <button className='justify-self-end' onClick={logoutHandler}>Logout</button>
         </div>

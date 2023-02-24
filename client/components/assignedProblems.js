@@ -12,27 +12,34 @@ const AssignedProblems = (props) => {
     const submitHandler = async (event) => {
         event.preventDefault()
         let b = event.target.id
-        let c = "button-"
+        let c = "button-" + b
+        console.log(b,c)
         const d = document.getElementById(c)
         const e = document.getElementById(b)
-        e.style.display = "none"
-        // console.log(notSubmissions[b].link, d.value, moment().format("DoMMMYYYY"), notSubmissions[b].createdDate)
-        const response = await fetch("http://localhost:5000/postAnswers",{
+        const response = await fetch("http://localhost:5000/postAnswers", {
             credentials: 'include',
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             method: "POST",
             body: JSON.stringify({
                 problemLink: notSubmissions[b].link,
                 solutionLink: d.value,
                 submittedDate: moment().format("DoMMMYYYY"),
-                createdDate: notSubmissions[b].createdDate
+                createdDate: notSubmissions[b].createdDate,
+                name: notSubmissions[b].name
             })
         })
         const result = await response.json()
+        if (result.message == 0) {
+            console.log("link exists")
+        }
+        else {
+
+            e.style.display = "none"
+        }
         console.log(result)
 
     }
-    if (props.data && props.subData ) {
+    if (props.data && props.subData) {
         console.log(props.data, props.subData)
         for (let x of props.data) {
             for (let y = 0; y < props.subData.length; y++) {
@@ -47,22 +54,23 @@ const AssignedProblems = (props) => {
             flag = 0
         }
     }
-    let i=0;
+    let i = 0;
     for (let x of notSubmissions) {
         let b = <tr>
             <td className="px-4 py-4 border border-slate-500">{x.topic}</td>
             <td className="px-4 border border-slate-500"><a href={x.link}>{x.link}</a></td>
+            <td className="px-4 border border-slate-500">{x.name}</td>
             <td className="px-4 border border-slate-500">{x.level}</td>
             <td className="px-4 border border-slate-500">{x.createdDate}</td>
             <td className="px-4 border border-slate-500">{x.submissionDate}</td>
             <td className="px-4 border border-slate-500 text-center">
                 <div className="flex">
-                    <input id={"button-"+i} type="text" className="border border-slate-700 rounded-md" placeholder="Submission Link"/>
+                    <input id={"button-" + i} type="text" className="border border-slate-700 rounded-md" placeholder="Submission Link" />
                     <button id={i} className="ml-4 px-2 bg-teal-500 w-1/4 mx-auto h-9 rounded" name={x.link} value={x.createdDate} onClick={submitHandler}>Submit</button>
                 </div>
             </td>
         </tr>
-        i+=1
+        i += 1
         renderData.push(b)
     }
     return (<div className="">
@@ -72,6 +80,7 @@ const AssignedProblems = (props) => {
                 <tr className="border  border-slate-500">
                     <th className={`px-4 text-black font-thin text-2xl py-4 bg-teal-500`}>Topic</th>
                     <th className={`px-4 text-black font-thin text-2xl py-4  bg-teal-500`}>Problem Link</th>
+                    <th className={`px-4 text-black font-thin text-2xl py-4  bg-teal-500`}>Name</th>
                     <th className={`px-4 text-black  font-thin text-2xl py-4 bg-teal-500`}>Difficulty Level</th>
                     <th className={`px-4 text-black  font-thin text-2xl py-4 bg-teal-500 `}>Assigned Date</th>
                     <th className={`px-4 text-black  font-thin text-2xl py-4 bg-teal-500 `}>Submission Date</th>

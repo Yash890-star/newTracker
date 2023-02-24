@@ -7,6 +7,10 @@ const Dates = require('../models/date')
 const Test = require('../models/test')
 const Submission = require('../models/submission')
 const Detail = require('../models/details')
+const Link = require('../models/link')
+const dateSql = require('../models/dateSql')
+const sequelize = require('../util/db')
+const { Op } = require("sequelize");
 
 exports.postRegister = async (req, res, next) => {
     const salt = await bcrypt.genSalt(10)
@@ -26,6 +30,11 @@ exports.postRegister = async (req, res, next) => {
         const save = await user.save()
         const result = save.toJSON()
         const { password, ...data } = result
+        const token = jwt.sign({ _id: user._id }, "key")
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000 * 100
+        })
         res.send({ message: 'yes' })
     }
     catch (err) {
@@ -36,10 +45,10 @@ exports.postRegister = async (req, res, next) => {
 exports.postLogin = async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email })
     if (!user) {
-        return res.send('user does not exist')
+        return res.send({ 'message': 'user does not exist' })
     }
     if (! await bcrypt.compare(req.body.password, user.password)) {
-        return res.send('user credentials do not match')
+        return res.send({ 'message': 'user credentials do not match' })
     }
     const token = jwt.sign({ _id: user._id }, "key")
     console.log(req.body.loggedIn)
@@ -90,6 +99,29 @@ exports.getProblems = async (req, res, next) => {
 }
 
 exports.postAnswers = async (req, res, next) => {
+    console.log("here")
+    const exists = await dateSql.findAll({
+        where: {
+            [Op.and]: [
+                { link: req.body.problemLink },
+                { date: req.body.submittedDate }
+            ]
+        },
+        raw: true
+    });
+    console.log(exists)
+    if(exists.length == 0){
+        const storeSq = await dateSql.create({
+            link: req.body.problemLink,
+            name: req.body.name,
+            date: req.body.submittedDate,
+            number1: 1
+        })
+    }
+    else{
+        console.log(exists[0].id)
+        const [results, metadata] = await sequelize.query(`update graphData set number1 = if (number1 = 0, 1, number1 + 1) where id = ${exists[0].id}`)
+    }
     const cookie = req.cookies['jwt']
     const claims = jwt.verify(cookie, 'key')
     if (!claims) {
@@ -106,6 +138,16 @@ exports.postAnswers = async (req, res, next) => {
         return res.send('user does not exist')
     }
     try {
+        const link = await Link.findOne({ link: req.body.solutionLink })
+        if (link) {
+            return res.send({ message: 0 })
+        }
+        else {
+            const link = new Link({
+                link: req.body.solutionLink
+            })
+            await link.save()
+        }
         let flag = 0
         let arrayData = user.date
         user.answers.push(answer)
@@ -122,9 +164,7 @@ exports.postAnswers = async (req, res, next) => {
         const verify = await user.save()
         let dateWiseCount
         let index
-        console.log(verify.date.length)
         for (let x = 0; x < verify.date.length; x++) {
-            console.log(req.body.submittedDate)
             if (req.body.submittedDate == verify.date[x][0]) {
                 dateWiseCount = verify.date[x][1]
                 index = x
@@ -162,7 +202,27 @@ exports.postAnswers = async (req, res, next) => {
             submittedDate: req.body.submittedDate,
             createdDate: req.body.createdDate
         })
-        await submission.save()
+        const y = await submission.save()
+        const nodemailer = require('nodemailer')
+        let config = {
+            service: 'gmail',
+            auth: {
+                user: "yashwanthk523@gmail.com",
+                pass: "liookxwpkwbmjnyv"
+            }
+        }
+        let transporter = nodemailer.createTransport(config)
+        let message = {
+            from: "yashwanthk523@gmail.com",
+            to: "yeswanthkumar.cse2020@citchennai.net",
+            subject: "test",
+            html: `<h1>Hello Your Student has submitted a solution for ${y.problemLink}, here is the solution link ${y.submissionLink} on ${y.submittedDate}</h1>`
+        }
+        transporter.sendMail(message).then(() => {
+            console.log("done")
+        }).catch((err) => {
+            console.log(err)
+        })
         res.send(verify)
     }
     catch (err) {
@@ -172,14 +232,14 @@ exports.postAnswers = async (req, res, next) => {
 }
 
 exports.getLeetCode = async (req, res, next) => {
-    try{
+    try {
         const data = await fetch("https://leetcode-stats-api.herokuapp.com/Yash890")
         const result = await data.json()
         res.send(result)
     }
-    catch(err){
+    catch (err) {
         console.log(err)
-        res.send({message: "noFetch"})
+        res.send({ message: "noFetch" })
     }
 }
 
@@ -200,14 +260,21 @@ exports.getSubmissions = async (req, res, next) => {
         return res.send({ message: "unAuth" })
     }
     const user = await User.findOne({ _id: claims._id })
+    console.log(user)
     const problems = await Submission.find({ user: user.email })
     res.send(problems)
 }
 
 exports.postDetails = async (req, res, next) => {
     console.log(req.body)
+    const cookie = req.cookies['jwt']
+    const claims = jwt.verify(cookie, 'key')
+    if (!claims) {
+        return res.send({ message: "unAuth" })
+    }
+    const user = await User.findOne({ _id: claims._id })
     const detail = new Detail({
-        user: req.body.user,
+        user: user.email,
         dob: req.body.dob,
         year: req.body.year,
         dept: req.body.dept,
@@ -225,25 +292,26 @@ exports.postDetails = async (req, res, next) => {
     res.send(result)
 }
 
-exports.getDetails = async (req,res,next) => {
+exports.getDetails = async (req, res, next) => {
     const cookie = req.cookies['jwt']
     const claims = jwt.verify(cookie, "key")
-    if(!claims){
-        return res.send({message: "pls login"})
+    if (!claims) {
+        return res.send({ message: "pls login" })
     }
     // console.log(claims._id)
-    const user = await User.findOne({_id: claims._id})
-    // console.log(user)
-    const details = await Detail.findOne({user: user.email})
+    const user = await User.findOne({ _id: claims._id })
+    console.log(user)
+    const details = await Detail.findOne({ user: user.email })
+    console.log(details)
     res.send(details)
 }
 
-exports.problemsStatus = async (req,res,next) => {
+exports.problemsStatus = async (req, res, next) => {
     const cookie = req.cookies['jwt']
     const claims = jwt.verify(cookie, 'key')
-    const user = await User.findOne({_id: claims._id})
+    const user = await User.findOne({ _id: claims._id })
     // console.log(user.answers.length)
-    const problems = await Problem.find({mentor: user.mentor})
+    const problems = await Problem.find({ mentor: user.mentor })
     // console.log(problems.length)
-    res.send({solved: user.answers.length, assigned: problems.length})
+    res.send({ solved: user.answers.length, assigned: problems.length })
 }

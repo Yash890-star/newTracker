@@ -40,7 +40,7 @@ const Dashboard = () => {
             <UserNavbar />
             <div className={`${s.container} w-2/3 mt-10 mx-auto`}>
                 <UserCard data={userData} />
-                <Leetcode data={leetCodeData} />
+                {leetCodeData ? <Leetcode data={leetCodeData} /> : <p className="text-center">Loading pls wait</p>}
                 <TrackerStats data={trackerStats} />
             </div>
             <div className={`${s.gridHelper}`}>

@@ -24,7 +24,8 @@ const problemSchema = new mongoose.Schema({
     topic: {
         type: String,
         required: true
-    }
+    },
+    name: String
 })
 
 module.exports = mongoose.model('Problem', problemSchema)

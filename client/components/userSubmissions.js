@@ -1,7 +1,7 @@
 import s from '../styles/login.module.css'
 
 const UserSubmissions = (props) => {
-    console.log(props)
+    console.log("asdfasdf",props)
     let a = []
     let tdata = []
     if (props.data) {

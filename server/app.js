@@ -6,6 +6,9 @@ const cors = require('cors')
 
 const app = express()
 const routes = require('./routes/routes')
+const sequelize = require('./util/db')
+
+mongoose.set('strictQuery', false)
 
 mongoose.connect('mongodb://localhost:27017/tracker', {
     useNewUrlParser: true,
@@ -15,9 +18,15 @@ mongoose.connect('mongodb://localhost:27017/tracker', {
         console.log(err)
     }
     else{
-        console.log('connected')
+        console.log('mongodb connected')
     }
 })
+sequelize.sync().then(res => {
+    console.log('sql Connected')
+}).catch(err => {
+    console.log("sql not connected")
+})
+
 
 app.use(cookieParser())
 app.use(bodyParser.json())

@@ -23,8 +23,12 @@ const Login = () => {
         })
         const result = await response.json()
         if(result.message == 'yes'){
-            console.log()
             router.push('/student/dashboard/problems')
+        }
+        else{
+            let elem = document.getElementById('incorrect')
+            console.log(elem)
+            elem.innerHTML = "Incorrect credentials pls try again"
         }
     }
 
@@ -54,6 +58,7 @@ const Login = () => {
                 </div>
                 <button className="bg-teal-500 px-6 mx-auto h-10 text-black rounded mt-2 mb-4 text-xl" onClick={loginHandler}>Login</button>
             </div>
+            <div className="text-center text-red-600" id="incorrect"></div>
             <div className="flex justify-center mt-5">
                 <p className="mr-1 font-thin text-xl">Dont Have An Account?</p><Link href="/student/signup" className="text-teal-500 text-xl">Click Here</Link>
             </div>

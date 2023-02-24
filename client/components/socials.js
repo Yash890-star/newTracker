@@ -5,7 +5,6 @@ import s from "../styles/login.module.css"
 const Socials = (props) => {
     let a = []
     if (props.data) {
-        console.log(props.data)
         let b = <div className="">
             <div className="flex items-center justify-center">
                 <AiFillGithub className="self-end mr-4 my-4" size={40}/>

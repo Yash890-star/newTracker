@@ -5,8 +5,8 @@ const AllSubmissions = (props) => {
         for (let x of props.data) {
             let a = <tr>
             <td className="px-4 py-4 border border-slate-500">{x.submittedDate}</td>
-            <td className="px-4 border border-slate-500"><a href={x.problemLink}>{x.problemLink}</a></td>
-            <td className="px-4 border border-slate-500">{x.submissionLink}</td>
+            <td className="px-4 border text-blue-400 border-slate-500"><a href={x.problemLink}>{x.problemLink}</a></td>
+            <td className="px-4 border text-blue-400 border-slate-500">{x.submissionLink}</td>
             <td className="px-4 border border-slate-500">{x.createdDate}</td>
         </tr>
             renderData.push(a)

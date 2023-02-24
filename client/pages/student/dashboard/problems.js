@@ -28,7 +28,7 @@ const Problems = () => {
                 <AssignedProblems data={problems} subData={submissions} />
             </div>
             <div className="mx-auto">
-                <AllSubmissions data={submissions} />
+                <AllSubmissions data={submissions} />                                               
             </div>
         </div>
     </>);

@@ -1,8 +1,8 @@
 import Navbar from "@/components/Navbar";
 import SubmissionsCard from "@/components/submissionsCard";
-import UserSubmissions from "@/components/userSubmissions";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
+import DateWiseSubmissions from "@/components/dateWiseSubmissions";
 
 const Submissions = () => {
     const [email, setEmail] = useState()
@@ -52,19 +52,15 @@ const Submissions = () => {
     return (<>
         <div>
             <Navbar />
-            <div className="w-screen text-center mt-10">
-                <input className="border border-slate-900 rounded-md mr-4" placeholder="User Email" type='text' onChange={e => setEmail(e.target.value)} />
-                <button className="bg-teal-500 mx-auto h-11 px-4 rounded" onClick={dataHandler}>Submit</button>
-            </div>
-            <UserSubmissions data={userSubmissions}/>
             <div className="text-center mt-8 text-4xl font-light">
-                {date}
+                {date} Submissions
             </div>
             <SubmissionsCard data={todaySubmission} />
         </div>
         <div className="mb-20">
 
         </div>
+        <DateWiseSubmissions/>
     </>);
 }
 

@@ -26,6 +26,10 @@ router.get('/getMentor', mentorRoutes.getMentor)
 router.post('/getTodaySubmission', mentorRoutes.getTodaySubmission)
 router.post('/getStudentSubmission', mentorRoutes.getStudentSubmission)
 router.post('/logout', mentorRoutes.postLogout)
+router.post('/getGraphData', mentorRoutes.getGraphData)
+router.get('/getAssignments', mentorRoutes.getAllAssignments)
+router.get('/getDateWiseSubmissions', mentorRoutes.getDateWiseSubmissions)
+router.get('/getAllDates', mentorRoutes.getAllDates)
 
 //Problem Routes
 router.post('/addProblem', problemRoutes.postAddProblem)

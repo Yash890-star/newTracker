@@ -1,5 +1,7 @@
 import { use, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link"
+
 const Details = () => {
     const [dob, setDob] = useState()
     const [yos, setYos] = useState()
@@ -39,7 +41,7 @@ const Details = () => {
         })
         const data = await response.json()
         console.log(data)
-        router.push('/student/dashboard/problems')
+        router.push('/student/login')
     }
     console.log("adsfnasd")
     return (
