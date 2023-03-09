@@ -38,7 +38,10 @@ exports.postAddProblem = async (req, res, next) => {
             from: "yashwanthk523@gmail.com",
             to: "yeswanthkumar.cse2020@citchennai.net",
             subject: "test",
-            html: `<h1>Hello Your Mentor has assigned a problem Pls login to site to view</h1>`
+            html: `<div>
+            <h1>Hello Your Mentor has assigned a problem </h1>
+            <a></a>
+            </div>`
         }
         transporter.sendMail(message).then(() => {
             console.log("done")
