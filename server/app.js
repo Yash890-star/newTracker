@@ -10,7 +10,7 @@ const sequelize = require('./util/db')
 
 mongoose.set('strictQuery', false)
 
-mongoose.connect('mongodb://localhost:27017/tracker', {
+mongoose.connect('mongodb://mongodb:27017/tracker', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, (err) => {
@@ -24,7 +24,7 @@ mongoose.connect('mongodb://localhost:27017/tracker', {
 sequelize.sync().then(res => {
     console.log('sql Connected')
 }).catch(err => {
-    console.log("sql not connected")
+    console.log(err)
 })
 
 

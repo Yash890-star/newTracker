@@ -1,0 +1,61 @@
+version: '3'
+services:
+  next-app:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: myapp-client
+    stdin_open: true
+    command: npm run dev
+    volumes:
+      - ./client/:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - node-server
+    ports:
+      - 3000:3000
+
+  node-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: myapp-server
+    ports:
+      - 5000:5000
+    depends_on:
+      - mongodb
+      - mysql
+    links:
+      - mongodb
+    volumes:
+      - ./server/:/app
+      - /app/node_modules
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+  
+  mysql:
+    image: mysql:latest
+    restart: unless-stopped
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    command:
+      - --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3307:3306
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    volumes:
+      - db:/var/lib/mysql
+    expose:
+      - 3306
+
+volumes:
+  node_modules:
+  db:
+  mongo-data:
+    driver: local
